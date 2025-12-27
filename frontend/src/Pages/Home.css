@@ -1,187 +1,198 @@
-.dashboard-content {
-  min-height: 100vh;
-  width: 100%;
+/* ================= GLOBAL ================= */
+.dashboard-area {
+  flex: 1;
   padding: 40px;
-  background: transparent;   /* ✅ key fix */
+  background: #f8fafc;
+  min-height: 100vh;
+  font-family: "Inter", sans-serif;
 }
 
-
-.card {
-  max-width: 900px;
-  margin: auto;
-  background: white;
-  padding: 30px;
-  border-radius: 14px;
-  box-shadow: 0 15px 40px rgba(0,0,0,0.1);
+/* ================= ENROLL CARD ================= */
+.enroll-card {
+  max-width: 520px;
+  background: #ffffff;
+  padding: 28px;
+  border-radius: 16px;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.08);
+  margin-bottom: 40px;
 }
 
-.card-title {
-  font-size: 28px;
-  margin-bottom: 25px;
-  color: #1e293b;
-}
-
-.course-form label {
+.enroll-card h2 {
+  font-size: 22px;
   font-weight: 600;
+  color: #0f172a;
+  margin-bottom: 20px;
 }
 
-.course-form select {
+.enroll-card label {
+  display: block;
+  font-size: 14px;
+  font-weight: 500;
+  color: #475569;
+  margin-bottom: 6px;
+}
+
+.enroll-card select {
   width: 100%;
-  padding: 12px;
-  margin-top: 8px;
-  border-radius: 8px;
+  height: 48px;
+  padding: 10px 14px;
+  border-radius: 10px;
   border: 1px solid #cbd5e1;
+  font-size: 14px;
+  color: #0f172a;
+  background-color: #ffffff;
 }
 
+/* ================= BUTTON GROUP ================= */
 .btn-group {
   display: flex;
-  gap: 15px;
-  margin-top: 20px;
+  gap: 16px;
+  margin-top: 24px;
 }
 
-.btn-primary {
-  background: #2563eb;
-  color: white;
+.btn {
+  height: 44px;
+  padding: 0 24px;
+  border-radius: 8px;
   border: none;
-  padding: 10px 22px;
-  border-radius: 8px;
+  font-weight: 500;
+  cursor: pointer;
+  font-size: 14px;
 }
 
-.btn-outline {
-  background: white;
-  border: 1px solid #2563eb;
-  color: #2563eb;
-  padding: 10px 22px;
-  border-radius: 8px;
+.reject {
+  background: #ef4444;
+  color: #ffffff;
 }
 
+.accept {
+  background: #16a34a;
+  color: #ffffff;
+}
+
+.reenroll {
+  background: #2563eb;
+  color: #ffffff;
+}
+
+/* ================= ENROLLED SECTION ================= */
 .enrolled-section {
-  margin-top: 40px;
+  max-width: 720px;
+  background: #ffffff;
+  padding: 24px;
+  border-radius: 16px;
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.06);
 }
 
 .enrolled-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  margin-bottom: 20px;
 }
 
-.btn-danger {
-  background: #dc2626;
-  color: white;
-  padding: 8px 16px;
-  border-radius: 8px;
-  border: none;
+.enrolled-header h3 {
+  font-size: 18px;
+  font-weight: 600;
+  color: #0f172a;
 }
 
-.course-list {
-  margin-top: 20px;
-}
-
-.course-item {
+/* ================= COURSE CARD ================= */
+.course-card {
+  background: #1d4ed8;
+  color: #ffffff;
+  padding: 16px;
+  border-radius: 12px;
   display: flex;
   justify-content: space-between;
-  background: #f1f5f9;
-  padding: 14px;
-  border-radius: 8px;
-  margin-bottom: 10px;
+  align-items: center;
+  margin-bottom: 14px;
 }
 
-.course-actions button {
-  background: none;
+.course-card span {
+  font-size: 16px;
+  font-weight: 500;
+}
+
+/* ================= COURSE ACTIONS ================= */
+.course-card div {
+  display: flex;
+  gap: 10px;
+}
+
+.mini-btn {
+  height: 30px;
+  padding: 0 12px;
+  border-radius: 6px;
   border: none;
-  color: #2563eb;
-  margin-left: 10px;
+  font-size: 13px;
   cursor: pointer;
-}
-.popup-form label {
-  font-weight: 600;
-  margin-bottom: 6px;
-  display: block;
+  font-weight: 500;
 }
 
-.popup-form select {
+.delete {
+  background: #ef4444;
+  color: #ffffff;
+}
+
+.update {
+  background: #16a34a;
+  color: #ffffff;
+}
+
+/* ================= MODAL ================= */
+.modal-body label {
+  display: block;
+  font-weight: 500;
+  margin-bottom: 6px;
+}
+
+.modal-body select {
   width: 100%;
-  padding: 12px;
+  height: 44px;
+  padding: 8px 12px;
   border-radius: 8px;
   border: 1px solid #cbd5e1;
 }
 
-.popup-btn-group {
-  display: flex;
-  justify-content: space-between;
-  gap: 15px;
-  margin-top: 20px;
+/* ================= RESPONSIVE ================= */
+@media (max-width: 768px) {
+  .dashboard-area {
+    padding: 20px;
+  }
+
+  .enroll-card,
+  .enrolled-section {
+    width: 100%;
+  }
+
+  .btn-group {
+    flex-direction: column;
+  }
+}
+.react-select {
+  margin-top: 8px;
 }
 
-.popup-enrolled {
-  margin-top: 20px;
-}
-
-.popup-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.popup-course-list {
-  margin-top: 15px;
-}
-
-.popup-course-item {
-  display: flex;
-  justify-content: space-between;
-  background: #f1f5f9;
-  padding: 12px;
-  border-radius: 8px;
-  margin-bottom: 10px;
-}
-
-.popup-course-item button {
-  background: none;
-  border: none;
-  color: #2563eb;
-  margin-left: 10px;
-  cursor: pointer;
-}
-/* Full screen center */
-.dashboard-wrapper {
-  min-height: 100vh;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  background: transparent;
-}
-
-/* Black box */
-.dashboard-box {
-  background-color: #041c12; /* dark black-green */
-  width: 320px;
-  padding: 30px 25px;
-  border-radius: 14px;
-  text-align: center;
-  box-shadow: 0 15px 40px rgba(0,0,0,0.6);
-}
-
-/* Dashboard text */
-.dashboard-title {
-  color: #ffffff;
-  font-size: 22px;
-  font-weight: 600;
-  margin-bottom: 25px;
-}
-
-/* Enroll button */
-.enroll-btn {
-  background: #2563eb;
-  color: white;
-  border: none;
-  padding: 12px 22px;
+.rs__control {
+  height: 48px;
   border-radius: 10px;
-  font-size: 15px;
-  cursor: pointer;
-  width: 100%;
+  border-color: #cbd5e1;
 }
 
-.enroll-btn:hover {
-  background: #1d4ed8;
+body {
+  background: none !important;
+}
+
+.nav-side-container {
+  background: none !important;
+}
+/* ================= CENTER CONTENT ================= */
+.center-wrapper {
+  padding: 20px;
+  max-width: 600px;
+  margin: 0 auto;          /* ✅ centers horizontally */
+  display: flex;
+  flex-direction: column;
+  gap: 49px;
 }
