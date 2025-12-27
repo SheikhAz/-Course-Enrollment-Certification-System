@@ -1,15 +1,10 @@
 const mongoose = require("mongoose");
 
-const CourseSchema = new mongoose.Schema({
-  registration: {
+const CoursSchema = mongoose.Schema({
+  courseName: {
     type: String,
     required: true,
-    unique: true,
-  },
-  courses: {
-    type: [String],
-    default: [],
   },
 });
 
-module.exports = mongoose.model("Course", CourseSchema);
+module.exports = mongoose.model("Cours", CoursSchema);

@@ -1,121 +1,139 @@
 const router = require("express").Router();
-const Student = require("../models/Student");
-const Course = require("../models/Course");
 
-/* ---------------- REGISTER STUDENT ---------------- */
+const Student = require("../models/Student");
+const Course = require("../models/Course"); // ✅ master courses
+const Enrollment = require("../models/Enrollment"); // ✅ enrolled courses
+const {
+  createIndexes,
+  findByIdAndUpdate,
+  findByIdAndDelete,
+} = require("../models/Student");
+
 router.post("/add", async (req, res) => {
   try {
     const newStudent = new Student(req.body);
-    await newStudent.save();
-    res.status(200).json("Student registered successfully");
+    const savedStudent = await newStudent.save();
+    res.status(200).json({ savedStudent });
   } catch (error) {
     res.status(500).json("Internal Server Error");
   }
 });
 
-/* ---------------- LOGIN ---------------- */
+router.post("/course", async (req, res) => {
+  try {
+    const newCourse = new Course(req.body);
+    const savedCourse = await newCourse.save();
+    res.status(200).json({ savedCourse });
+  } catch (error) {
+    res.status(500).json(error);
+  }
+});
+
 router.post("/auth", async (req, res) => {
   try {
+    // console.log('inside try');
     const student = await Student.findOne({ email: req.body.email });
-    if (!student || student.password !== req.body.password) {
-      return res.status(400).json("Wrong credentials");
+
+    // console.log(student);
+    !student &&
+      res.status(400).json({
+        message: "Wrong Credentials",
+        success: false,
+      });
+    if (student) {
+      // console.log('inside if');
+      const validated = req.body.password === student.password;
+      // console.log(validated)
+      if (!validated) {
+        res.status(400).json({
+          message: "Wrong Credentials",
+          success: false,
+        });
+      } else {
+        res.status(200).json(student);
+      }
     }
-    res.status(200).json(student);
   } catch (error) {
     res.status(500).json(error);
   }
 });
 
-/* ---------------- ADD / ENROLL COURSE ---------------- */
-router.post("/course", async (req, res) => {
-  const { registration, courses } = req.body;
-
+router.post("/addcourse", async (req, res) => {
   try {
-    const existing = await Course.findOne({ registration });
+    const newCourse = new Cours(req.body);
+    const savedCours = await newCourse.save();
 
-    if (existing) {
-      return res.status(400).json("Already enrolled");
-    }
-
-    const newCourse = new Course({ registration, courses });
-    await newCourse.save();
-
-    res.status(200).json("Courses enrolled");
+    res.status(200).json(savedCours);
   } catch (error) {
     res.status(500).json(error);
   }
 });
 
-/* ---------------- GET ALL AVAILABLE COURSES ---------------- */
 router.get("/getcourses", async (req, res) => {
   try {
-    const courses = await Course.find({}, { courses: 1, _id: 0 });
+    const courses = await Course.find();
     res.status(200).json(courses);
-  } catch (error) {
-    res.status(500).json(error);
+  } catch (err) {
+    res.status(500).json(err);
   }
 });
 
-/* ---------------- GET USER ENROLLED COURSES ---------------- */
 router.post("/getsecscourses", async (req, res) => {
   try {
-    const course = await Course.findOne({
+    const enrollment = await Enrollment.findOne({
       registration: req.body.registration,
     });
 
-    if (!course) {
+    if (!enrollment) {
       return res.status(404).json([]);
     }
 
-    res.status(200).json(course.courses);
-  } catch (error) {
-    res.status(500).json(error);
+    res.status(200).json(enrollment.courses);
+  } catch (err) {
+    res.status(500).json(err);
   }
 });
 
-/* ---------------- DELETE SINGLE COURSE ---------------- */
 router.delete("/delete", async (req, res) => {
-  const { registration, name } = req.body;
-
   try {
-    const updated = await Course.findOneAndUpdate(
-      { registration },
-      { $pull: { courses: name } },
+    const updated = await Enrollment.findOneAndUpdate(
+      { registration: req.body.registration },
+      { $pull: { courses: req.body.name } },
+      { new: true }
+    );
+    res.status(200).json(updated);
+  } catch (err) {
+    res.status(500).json(err);
+  }
+});
+
+router.delete("/deleteall", async (req, res) => {
+  try {
+    await Enrollment.findOneAndDelete({
+      registration: req.body.registration,
+    });
+    res.status(200).json("All courses deleted");
+  } catch (err) {
+    res.status(500).json(err);
+  }
+});
+
+router.put("/update", async (req, res) => {
+  try {
+    const updated = await Enrollment.findOneAndUpdate(
+      {
+        registration: req.body.registration,
+        courses: req.body.name,
+      },
+      {
+        $set: { "courses.$": req.body.update },
+      },
       { new: true }
     );
 
     res.status(200).json(updated);
-  } catch (error) {
-    res.status(500).json(error);
-  }
-});
-
-/* ---------------- DELETE ALL COURSES ---------------- */
-router.delete("/deleteall", async (req, res) => {
-  try {
-    await Course.findOneAndDelete({
-      registration: req.body.registration,
-    });
-
-    res.status(200).json("All courses deleted");
-  } catch (error) {
-    res.status(500).json(error);
-  }
-});
-
-/* ---------------- UPDATE COURSE ---------------- */
-router.put("/update", async (req, res) => {
-  const { registration, name, update } = req.body;
-
-  try {
-    const result = await Course.updateOne(
-      { registration, courses: name },
-      { $set: { "courses.$": update } }
-    );
-
-    res.status(200).json(result);
-  } catch (error) {
-    res.status(500).json(error);
+  } catch (err) {
+    res.status(500).json(err);
   }
 });
 

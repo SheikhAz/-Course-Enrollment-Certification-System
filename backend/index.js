@@ -10,7 +10,7 @@ app.use(express.json());
 app.use(cors());
 
 mongoose
-  .connect("mongodb://127.0.0.1:27017/CourseDB")
+  .connect("mongodb://localhost:27017")
   .then(() => console.log("MongoDB connected"))
   .catch((err) => console.log(err));
 
