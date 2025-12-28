@@ -1,8 +1,19 @@
 import { createContext, useReducer } from "react";
 import Reducer from "./Reducer";
 
+const getUserFromStorage = () => {
+  try {
+    const user = localStorage.getItem("user");
+    return user ? JSON.parse(user) : null;
+  } catch (err) {
+    console.error("Invalid user in localStorage");
+    localStorage.removeItem("user");
+    return null;
+  }
+};
+
 const INITIAL_STATE = {
-  user: JSON.parse(localStorage.getItem("user")) || null,
+  user: getUserFromStorage(),
   isFetching: false,
   error: false,
 };
