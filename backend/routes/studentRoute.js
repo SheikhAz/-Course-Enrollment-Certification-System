@@ -1,7 +1,9 @@
-const router = require("express").Router();
-const Student = require("../models/Student");
-const Course = require("../models/Course");
-const Enrollment = require("../models/Enrollment");
+import express from "express";
+import Student from "../models/Student.js";
+import Course from "../models/Course.js";
+import Enrollment from "../models/Enrollment.js";
+
+const router = express.Router();
 
 /* ================= STUDENT REGISTER ================= */
 router.post("/add", async (req, res) => {
@@ -78,7 +80,6 @@ BODY:
 */
 router.post("/course", async (req, res) => {
   const { registration, course } = req.body;
-  console.log("COURSE API BODY:", req.body); // 👈 ADD THIS
 
   if (!registration || !course) {
     return res.status(400).json({
@@ -93,16 +94,31 @@ router.post("/course", async (req, res) => {
     if (!enrollment) {
       enrollment = new Enrollment({
         registration,
-        courses: [course],
+        courses: [
+          {
+            courseName: course,
+            status: "enrolled",
+            certificateIssued: false,
+          },
+        ],
       });
     } else {
-      if (enrollment.courses.includes(course)) {
+      const alreadyEnrolled = enrollment.courses.find(
+        (c) => c.courseName === course
+      );
+
+      if (alreadyEnrolled) {
         return res.status(400).json({
           success: false,
           message: "Course already enrolled",
         });
       }
-      enrollment.courses.push(course);
+
+      enrollment.courses.push({
+        courseName: course,
+        status: "enrolled",
+        certificateIssued: false,
+      });
     }
 
     await enrollment.save();
@@ -151,7 +167,7 @@ router.delete("/delete", async (req, res) => {
   try {
     const updated = await Enrollment.findOneAndUpdate(
       { registration },
-      { $pull: { courses: name } },
+      { $pull: { courses: { courseName: name } } },
       { new: true }
     );
 
@@ -196,8 +212,8 @@ router.put("/update", async (req, res) => {
 
   try {
     const updated = await Enrollment.findOneAndUpdate(
-      { registration, courses: name },
-      { $set: { "courses.$": update } },
+      { registration, "courses.courseName": name },
+      { $set: { "courses.$.courseName": update } },
       { new: true }
     );
 
@@ -213,4 +229,4 @@ router.put("/update", async (req, res) => {
   }
 });
 
-module.exports = router;
+export default router;

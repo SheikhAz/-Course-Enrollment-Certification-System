@@ -1,18 +1,26 @@
-const mongoose = require("mongoose"); // ✅ REQUIRED
+import mongoose from "mongoose";
 
 const EnrollmentSchema = new mongoose.Schema(
   {
     registration: {
       type: String,
       required: true,
-      unique: true,
     },
-    courses: {
-      type: [String],
-      default: [],
-    },
+    courses: [
+      {
+        courseName: String,
+        status: {
+          type: String,
+          default: "enrolled", // enrolled | in-progress | completed
+        },
+        certificateIssued: {
+          type: Boolean,
+          default: false,
+        },
+      },
+    ],
   },
   { timestamps: true }
 );
 
-module.exports = mongoose.model("Enrollment", EnrollmentSchema);
+export default mongoose.model("Enrollment", EnrollmentSchema);

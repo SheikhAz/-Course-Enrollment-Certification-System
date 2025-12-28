@@ -5,6 +5,7 @@ import axios from "axios";
 import { Context } from "../Context/Context";
 import { toast } from "react-toastify";
 import { Button, Modal } from "react-bootstrap";
+import { Link } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./Home.css";
 
@@ -14,10 +15,10 @@ const Home = () => {
   const [show, setShow] = useState(false);
   const [userModal, setUserModal] = useState(false);
 
-  const [courses, setCourses] = useState([]); // all available courses
-  const [enrolledCourses, setEnrolledCourses] = useState([]); // enrolled courses
-  const [selectedCourse, setSelectedCourse] = useState(""); // selected dropdown value
-  const [courseToUpdate, setCourseToUpdate] = useState("");
+  const [courses, setCourses] = useState([]);
+  const [enrolledCourses, setEnrolledCourses] = useState([]);
+  const [selectedCourse, setSelectedCourse] = useState("");
+  const [courseToUpdate, setCourseToUpdate] = useState(null);
 
   /* ---------------- FETCH DATA ---------------- */
   useEffect(() => {
@@ -30,11 +31,14 @@ const Home = () => {
       const res = await axios.get(
         "http://localhost:5000/api/register/getcourses"
       );
+      console.log("COURSES FROM API:", res.data);
       setCourses(res.data);
-    } catch (err) {
+    } catch {
       toast.error("Failed to load courses");
     }
   };
+
+
 
   const fetchUserCourses = async () => {
     try {
@@ -43,6 +47,8 @@ const Home = () => {
         { registration: user.registration }
       );
 
+      // EXPECTED FORMAT:
+      // [{ _id, courseName, status, certificateIssued }]
       setEnrolledCourses(res.data?.courses || []);
     } catch {
       setEnrolledCourses([]);
@@ -53,11 +59,6 @@ const Home = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (!user?.registration) {
-      toast.error("User registration missing. Please login again.");
-      return;
-    }
-
     if (!selectedCourse) {
       toast.error("Please select a course");
       return;
@@ -67,8 +68,8 @@ const Home = () => {
       const res = await axios.post(
         "http://localhost:5000/api/register/course",
         {
-          registration: user.registration, // MUST exist
-          course: selectedCourse, // MUST be `course`
+          registration: user.registration,
+          course: selectedCourse,
         }
       );
 
@@ -76,17 +77,17 @@ const Home = () => {
       setSelectedCourse("");
       setEnrolledCourses(res.data.courses);
     } catch (err) {
-      toast.error(err.response?.data?.message || "Enrollment failed");
+      toast.error("Enrollment failed");
     }
   };
 
   /* ---------------- DELETE COURSE ---------------- */
-  const handleDelete = async (course) => {
+  const handleDelete = async (courseName) => {
     if (!window.confirm("Delete this course?")) return;
 
     try {
       await axios.delete("http://localhost:5000/api/register/delete", {
-        data: { name: course, registration: user.registration },
+        data: { name: courseName, registration: user.registration },
       });
 
       toast.success("Course deleted");
@@ -118,7 +119,7 @@ const Home = () => {
 
     try {
       await axios.put("http://localhost:5000/api/register/update", {
-        name: courseToUpdate,
+        name: courseToUpdate.courseName,
         registration: user.registration,
         update: selectedCourse,
       });
@@ -186,16 +187,21 @@ const Home = () => {
             {enrolledCourses.length === 0 ? (
               <p style={{ color: "#64748b" }}>No courses enrolled yet</p>
             ) : (
-              enrolledCourses.map((course, i) => (
-                <div key={i} className="course-card">
-                  <span>{course}</span>
+              enrolledCourses.map((course) => (
+                <div key={course._id} className="course-card">
                   <div>
+                    <strong>{course.courseName}</strong>
+                    <p>Status: {course.status || "enrolled"}</p>
+                  </div>
+
+                  <div className="course-actions">
                     <button
                       className="mini-btn delete"
-                      onClick={() => handleDelete(course)}
+                      onClick={() => handleDelete(course.courseName)}
                     >
                       Delete
                     </button>
+
                     <button
                       className="mini-btn update"
                       onClick={() => {
@@ -205,6 +211,16 @@ const Home = () => {
                     >
                       Update
                     </button>
+
+                    {/* ✅ VIEW CERTIFICATE */}
+                    {course.certificateIssued && (
+                      <Link
+                        className="mini-btn certificate"
+                        to={`/certificate/${course._id}`}
+                      >
+                        View Certificate
+                      </Link>
+                    )}
                   </div>
                 </div>
               ))

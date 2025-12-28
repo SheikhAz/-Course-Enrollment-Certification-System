@@ -1,0 +1,45 @@
+.certificate-page {
+  min-height: 100vh;
+  background: #f4f6f8;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.certificate-card {
+  width: 800px;
+  background: white;
+  padding: 40px;
+  border: 8px solid #0d6efd;
+  text-align: center;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+}
+
+.certificate-card h1 {
+  color: #0d6efd;
+  margin-bottom: 20px;
+}
+
+.certificate-text {
+  font-size: 18px;
+  margin: 10px 0;
+}
+
+.student-name {
+  font-size: 32px;
+  font-weight: bold;
+  margin: 15px 0;
+}
+
+.course-name {
+  font-size: 24px;
+  color: #333;
+  margin: 10px 0;
+}
+
+.certificate-footer {
+  margin-top: 40px;
+  display: flex;
+  justify-content: space-between;
+  font-size: 14px;
+}
