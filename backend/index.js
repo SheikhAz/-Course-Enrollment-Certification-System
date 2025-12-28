@@ -19,4 +19,3 @@ app.use("/api/register", studentRoute);
 app.listen(5000, () => {
   console.log("Backend running on port 5000");
 });
-  

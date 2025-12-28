@@ -80,8 +80,6 @@ const Home = () => {
     }
   };
 
-
-
   /* ---------------- DELETE COURSE ---------------- */
   const handleDelete = async (course) => {
     if (!window.confirm("Delete this course?")) return;

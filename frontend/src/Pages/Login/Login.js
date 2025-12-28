@@ -30,10 +30,9 @@ const Login = () => {
       toast.success("Logged in successfully");
 
       // ✅ IMPORTANT FIX
-      dispatch({
-        type: "LOGIN_SUCCESS",
-        payload: res.data.student,
-      });
+      dispatch({ type: "LOGIN_SUCCESS", payload: res.data.student });
+      localStorage.setItem("user", JSON.stringify(res.data.student));
+
 
       navigate("/dash");
     } catch (error) {
