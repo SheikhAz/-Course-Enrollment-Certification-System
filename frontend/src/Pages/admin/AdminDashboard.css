@@ -1,0 +1,70 @@
+.admin-dashboard {
+  min-height: 100vh;
+  background-image: url("https://images.unsplash.com/photo-1523050854058-8df90110c9f1");
+  background-size: cover;
+  background-position: center;
+  position: relative;
+  display: flex;
+  justify-content: center;
+}
+
+.admin-dashboard::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.7);
+  z-index: 0;
+}
+
+.admin-dashboard-content {
+  position: relative;
+  z-index: 1;
+  max-width: 600px;
+  width: 100%;
+  padding: 60px 20px;
+  color: white;
+  text-align: center;
+}
+
+.stats-card {
+  background: rgba(255, 255, 255, 0.15);
+  padding: 30px;
+  border-radius: 12px;
+  backdrop-filter: blur(6px);
+  margin-top: 30px;
+}
+
+.loading {
+  color: white;
+  text-align: center;
+  padding: 50px;
+}
+.admin-page {
+  padding: 40px;
+  color: #fff;
+}
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+}
+
+.stat-card {
+  background: rgba(255, 255, 255, 0.15);
+  padding: 20px;
+  border-radius: 10px;
+  text-align: center;
+}
+
+.cert-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+}
+
+.cert-table th,
+.cert-table td {
+  border: 1px solid #ccc;
+  padding: 10px;
+}

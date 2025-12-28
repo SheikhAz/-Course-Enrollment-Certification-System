@@ -174,6 +174,27 @@ const Home = () => {
               </button>
             </div>
           </form>
+          {/* ================= ADMIN PANEL ================= */}
+          <div className="admin-panel">
+            <h3 className="admin-title">Admin Panel</h3>
+
+            <div className="admin-links">
+              <Link to="/admin/dashboard" className="admin-card">
+                <h4>Dashboard</h4>
+                <p>View system statistics</p>
+              </Link>
+
+              <Link to="/admin/manage-certificates" className="admin-card">
+                <h4>Issue Certificates</h4>
+                <p>Approve & issue certificates</p>
+              </Link>
+
+              <Link to="/admin/certificates" className="admin-card">
+                <h4>View Certificates</h4>
+                <p>All issued certificates</p>
+              </Link>
+            </div>
+          </div>
 
           {/* Enrolled Courses */}
           <div className="enrolled-section">

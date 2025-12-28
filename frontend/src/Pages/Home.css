@@ -196,3 +196,55 @@ body {
   flex-direction: column;
   gap: 49px;
 }
+/* ================= ADMIN PANEL ================= */
+
+.admin-panel {
+  margin-top: 40px;
+  background: #ffffff;
+  border-radius: 16px;
+  padding: 25px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+}
+
+.admin-title {
+  margin-bottom: 20px;
+  font-weight: 600;
+  color: #0f172a;
+}
+
+.admin-links {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+}
+
+.admin-card {
+  background: linear-gradient(135deg, #2563eb, #1e40af);
+  color: #ffffff;
+  padding: 20px;
+  border-radius: 14px;
+  text-decoration: none;
+  transition: all 0.3s ease;
+}
+
+.admin-card h4 {
+  margin-bottom: 6px;
+  font-size: 18px;
+}
+
+.admin-card p {
+  font-size: 14px;
+  opacity: 0.9;
+}
+
+.admin-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 12px 25px rgba(37, 99, 235, 0.35);
+}
+
+/* Responsive */
+@media (max-width: 900px) {
+  .admin-links {
+    grid-template-columns: 1fr;
+  }
+}

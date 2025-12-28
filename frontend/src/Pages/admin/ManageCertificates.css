@@ -1,0 +1,65 @@
+.manage-certificates {
+  position: relative;
+  min-height: 100vh;
+  background-image: url("https://images.unsplash.com/photo-1523050854058-8df90110c9f1");
+  background-size: cover;
+  background-position: center;
+  display: flex;
+  justify-content: center; /* CENTER HORIZONTALLY */
+}
+
+.manage-certificates::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.7);
+  z-index: 0;
+}
+
+.manage-certificates-content {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  max-width: 900px; /* ✅ CENTER COLUMN WIDTH */
+  padding: 40px 20px;
+  color: #ffffff;
+  display: flex;
+  flex-direction: column;
+  align-items: center; /* ✅ CENTER ITEMS */
+}
+
+.manage-certificates-content h1 {
+  margin-bottom: 30px;
+  text-align: center;
+}
+
+.certificate-card {
+  width: 100%; /* FULL WIDTH OF CENTER COLUMN */
+  background: rgba(255, 255, 255, 0.12);
+  border-radius: 12px;
+  padding: 24px;
+  margin-bottom: 20px;
+  backdrop-filter: blur(6px);
+  border: 3px solid #0d6efd;
+}
+
+.certificate-card p {
+  margin: 6px 0;
+  text-align: center; /* OPTIONAL: CENTER TEXT */
+}
+
+.issue-btn {
+  margin-top: 14px;
+  padding: 10px 18px;
+  background-color: #198754;
+  border: none;
+  border-radius: 6px;
+  color: #fff;
+  cursor: pointer;
+  font-weight: 500;
+}
+
+.issue-btn.disabled {
+  background-color: #6c757d;
+  cursor: not-allowed;
+}

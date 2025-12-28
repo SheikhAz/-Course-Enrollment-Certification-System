@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { toast } from "react-toastify";
+import "./ManageCertificates.css";
 
 const ManageCertificates = () => {
   const [enrollments, setEnrollments] = useState([]);
@@ -22,79 +23,71 @@ const ManageCertificates = () => {
   };
 
   /* ---------------- ISSUE CERTIFICATE ---------------- */
-  const issueCertificate = async (enrollmentId) => {
+  const issueCertificate = async (enrollmentId, courseName) => {
     try {
-      await axios.post(
-        `http://localhost:5000/api/admin/issue-certificate/${enrollmentId}`
-      );
+      await axios.put("http://localhost:5000/api/admin/issue-certificate", {
+        enrollmentId,
+        courseName,
+      });
 
       toast.success("Certificate issued successfully");
-      fetchEnrollments(); // refresh list
+      fetchEnrollments();
     } catch (err) {
-      toast.error(err.response?.data || "Certificate issue failed");
+      toast.error("Certificate issue failed");
     }
   };
 
   return (
-    <div style={{ padding: "20px" }}>
-      <h2>Manage Certificates</h2>
+    <div className="manage-certificates">
+      <div className="manage-certificates-content">
+        <h1>Manage Certificates</h1>
 
-      {enrollments.length === 0 ? (
-        <p>No enrollments found</p>
-      ) : (
-        enrollments.map((enrollment) => (
-          <div
-            key={enrollment._id}
-            style={{
-              border: "1px solid #ddd",
-              padding: "15px",
-              marginBottom: "10px",
-              borderRadius: "6px",
-            }}
-          >
-            <p>
-              <strong>Student:</strong> {enrollment.student?.name}
-            </p>
-            <p>
-              <strong>Course:</strong> {enrollment.course?.title}
-            </p>
-            <p>
-              <strong>Status:</strong> {enrollment.status}
-            </p>
-            <p>
-              <strong>Certificate:</strong>{" "}
-              {enrollment.certificateIssued ? "Issued" : "Not Issued"}
-            </p>
+        {enrollments.length === 0 ? (
+          <p>No enrollments found</p>
+        ) : (
+          enrollments.map((enrollment) =>
+            enrollment.courses.map((course, index) => (
+              <div
+                className="certificate-card"
+                key={`${enrollment._id}-${index}`}
+              >
+                <p>
+                  <strong>Registration:</strong> {enrollment.registration}
+                </p>
 
-            {/* ✅ ISSUE CERTIFICATE BUTTON */}
-            <button
-              disabled={
-                enrollment.certificateIssued ||
-                enrollment.status !== "completed"
-              }
-              onClick={() => issueCertificate(enrollment._id)}
-              style={{
-                padding: "8px 14px",
-                background:
-                  enrollment.certificateIssued ||
-                  enrollment.status !== "completed"
-                    ? "#ccc"
-                    : "#198754",
-                color: "#fff",
-                border: "none",
-                borderRadius: "4px",
-                cursor:
-                  enrollment.certificateIssued ||
-                  enrollment.status !== "completed"
-                    ? "not-allowed"
-                    : "pointer",
-              }}
-            >
-              Issue Certificate
-            </button>
-          </div>
-        ))
-      )}
+                <p>
+                  <strong>Course:</strong> {course.courseName}
+                </p>
+
+                <p>
+                  <strong>Status:</strong> {course.status || "enrolled"}
+                </p>
+
+                <p>
+                  <strong>Certificate:</strong>{" "}
+                  {course.certificateIssued ? "Issued" : "Not Issued"}
+                </p>
+
+                <button
+                  disabled={
+                    course.certificateIssued || course.status !== "completed"
+                  }
+                  onClick={() =>
+                    issueCertificate(enrollment._id, course.courseName)
+                  }
+                  className={`issue-btn ${
+                    course.certificateIssued || course.status !== "completed"
+                      ? "disabled"
+                      : ""
+                  }`}
+                >
+                  Issue Certificate
+                </button>
+              </div>
+            ))
+          )
+        )}
+      </div>
     </div>
   );
 };
