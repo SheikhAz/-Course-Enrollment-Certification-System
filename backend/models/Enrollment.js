@@ -1,14 +1,18 @@
-const mongoose = require("mongoose");
+const mongoose = require("mongoose"); // ✅ REQUIRED
 
-const CourseSchema = mongoose.Schema({
-  registration: {
-    type: String,
-    required: true,
-    unique: true,
+const EnrollmentSchema = new mongoose.Schema(
+  {
+    registration: {
+      type: String,
+      required: true,
+      unique: true,
+    },
+    courses: {
+      type: [String],
+      default: [],
+    },
   },
-  courses: {
-    type: Array,
-  },
-});
+  { timestamps: true }
+);
 
-module.exports = mongoose.model("Course", CourseSchema);
+module.exports = mongoose.model("Enrollment", EnrollmentSchema);

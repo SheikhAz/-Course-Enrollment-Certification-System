@@ -26,8 +26,15 @@ const Login = () => {
         "http://localhost:5000/api/register/auth",
         loginCred
       );
+
       toast.success("Logged in successfully");
-      dispatch({ type: "LOGIN_SUCCESS", payload: res.data });
+
+      // ✅ IMPORTANT FIX
+      dispatch({
+        type: "LOGIN_SUCCESS",
+        payload: res.data.student,
+      });
+
       navigate("/dash");
     } catch (error) {
       toast.error("Credentials are incorrect");
@@ -41,13 +48,7 @@ const Login = () => {
         <h2>LOGIN</h2>
 
         <form onSubmit={handleSubmit}>
-          <input
-            type="text"
-            placeholder="Email"
-            ref={emailRef}
-            required
-          />
-
+          <input type="text" placeholder="Email" ref={emailRef} required />
           <input
             type="password"
             placeholder="Password"

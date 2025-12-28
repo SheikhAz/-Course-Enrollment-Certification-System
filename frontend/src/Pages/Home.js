@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, useContext } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import Header from "../components/Header";
 import Profile from "../components/Profile/Profile";
 import axios from "axios";
@@ -14,17 +14,12 @@ const Home = () => {
   const [show, setShow] = useState(false);
   const [userModal, setUserModal] = useState(false);
 
-  const [courses, setCourses] = useState([]);
-  const [enrolledCourses, setEnrolledCourses] = useState([]);
-  const [selectedCourses, setSelectedCourses] = useState([]);
+  const [courses, setCourses] = useState([]); // all available courses
+  const [enrolledCourses, setEnrolledCourses] = useState([]); // enrolled courses
+  const [selectedCourse, setSelectedCourse] = useState(""); // selected dropdown value
   const [courseToUpdate, setCourseToUpdate] = useState("");
 
-  const selectRef = useRef();
-  const updateRef = useRef();
-  const resetRef = useRef();
-  const modalBtnRef = useRef();
-
-  /* ---------------- FETCH COURSES ---------------- */
+  /* ---------------- FETCH DATA ---------------- */
   useEffect(() => {
     fetchAllCourses();
     fetchUserCourses();
@@ -35,12 +30,11 @@ const Home = () => {
       const res = await axios.get(
         "http://localhost:5000/api/register/getcourses"
       );
-      setCourses(res.data); // <-- dataset stored in state
-    } catch {
+      setCourses(res.data);
+    } catch (err) {
       toast.error("Failed to load courses");
     }
   };
-
 
   const fetchUserCourses = async () => {
     try {
@@ -48,7 +42,8 @@ const Home = () => {
         "http://localhost:5000/api/register/getsecscourses",
         { registration: user.registration }
       );
-      setEnrolledCourses(res.data[0]?.courses || []);
+
+      setEnrolledCourses(res.data?.courses || []);
     } catch {
       setEnrolledCourses([]);
     }
@@ -57,28 +52,35 @@ const Home = () => {
   /* ---------------- ENROLL COURSE ---------------- */
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const selected = selectRef.current.value;
-    if (!selected) return;
 
-    const updated = [selected, ...selectedCourses];
-    setSelectedCourses(updated);
+    if (!user?.registration) {
+      toast.error("User registration missing. Please login again.");
+      return;
+    }
 
-    if (!window.confirm("Do you want to select another course?")) {
-      try {
-        await axios.post("http://localhost:5000/api/register/course", {
-          registration: user.registration,
-          courses: updated,
-        });
-        toast.success("Course enrolled successfully");
-        setSelectedCourses([]);
-        fetchUserCourses();
-      } catch {
-        toast.error("You can enroll only once");
-      }
-    } else {
-      resetRef.current.click();
+    if (!selectedCourse) {
+      toast.error("Please select a course");
+      return;
+    }
+
+    try {
+      const res = await axios.post(
+        "http://localhost:5000/api/register/course",
+        {
+          registration: user.registration, // MUST exist
+          course: selectedCourse, // MUST be `course`
+        }
+      );
+
+      toast.success("Course enrolled successfully");
+      setSelectedCourse("");
+      setEnrolledCourses(res.data.courses);
+    } catch (err) {
+      toast.error(err.response?.data?.message || "Enrollment failed");
     }
   };
+
+
 
   /* ---------------- DELETE COURSE ---------------- */
   const handleDelete = async (course) => {
@@ -88,6 +90,7 @@ const Home = () => {
       await axios.delete("http://localhost:5000/api/register/delete", {
         data: { name: course, registration: user.registration },
       });
+
       toast.success("Course deleted");
       fetchUserCourses();
     } catch {
@@ -103,7 +106,8 @@ const Home = () => {
       await axios.delete("http://localhost:5000/api/register/deleteall", {
         data: { registration: user.registration },
       });
-      toast.success("Courses removed");
+
+      toast.success("All courses removed");
       fetchUserCourses();
     } catch {
       toast.error("Failed to delete courses");
@@ -111,31 +115,25 @@ const Home = () => {
   };
 
   /* ---------------- UPDATE COURSE ---------------- */
-  const handleUpdateClick = (course) => {
-    setCourseToUpdate(course);
-    modalBtnRef.current.click();
-  };
-
   const handleUpdateSubmit = async (e) => {
     e.preventDefault();
 
     try {
-      const res = await axios.put("http://localhost:5000/api/register/update", {
+      await axios.put("http://localhost:5000/api/register/update", {
         name: courseToUpdate,
         registration: user.registration,
-        update: updateRef.current.value,
+        update: selectedCourse,
       });
 
-      if (res.status === 200) {
-        toast.success("Course updated successfully");
-        fetchUserCourses();
-        setShow(false);
-      }
+      toast.success("Course updated");
+      setShow(false);
+      fetchUserCourses();
     } catch {
       toast.error("Update failed");
     }
   };
 
+  /* ---------------- UI ---------------- */
   return (
     <div className="nav-side-container">
       <Header setUserModal={setUserModal} userModal={userModal} />
@@ -143,24 +141,33 @@ const Home = () => {
       <div className="dashboard-area">
         {userModal && <Profile />}
 
-        {/* CENTER WRAPPER */}
         <div className="center-wrapper">
-          {/* Enrollment Form */}
+          {/* Enrollment Card */}
           <form className="enroll-card" onSubmit={handleSubmit}>
             <h2>Course Enrollment</h2>
 
             <label>Choose a course</label>
-            <select ref={selectRef} required>
-              <option value="" disabled hidden>
+            <select
+              value={selectedCourse}
+              onChange={(e) => setSelectedCourse(e.target.value)}
+              required
+            >
+              <option value="" disabled>
                 Select course
               </option>
               {courses.map((c, i) => (
-                <option key={i}>{c.courseName}</option>
+                <option key={i} value={c.courseName}>
+                  {c.courseName}
+                </option>
               ))}
             </select>
 
             <div className="btn-group">
-              <button type="reset" ref={resetRef} className="btn reject">
+              <button
+                type="button"
+                className="btn reject"
+                onClick={() => setSelectedCourse("")}
+              >
                 Reject
               </button>
               <button type="submit" className="btn accept">
@@ -178,35 +185,35 @@ const Home = () => {
               </button>
             </div>
 
-            {enrolledCourses.map((course, i) => (
-              <div key={i} className="course-card">
-                <span>{course}</span>
-                <div>
-                  <button
-                    className="mini-btn delete"
-                    onClick={() => handleDelete(course)}
-                  >
-                    Delete
-                  </button>
-                  <button
-                    className="mini-btn update"
-                    onClick={() => handleUpdateClick(course)}
-                  >
-                    Update
-                  </button>
+            {enrolledCourses.length === 0 ? (
+              <p style={{ color: "#64748b" }}>No courses enrolled yet</p>
+            ) : (
+              enrolledCourses.map((course, i) => (
+                <div key={i} className="course-card">
+                  <span>{course}</span>
+                  <div>
+                    <button
+                      className="mini-btn delete"
+                      onClick={() => handleDelete(course)}
+                    >
+                      Delete
+                    </button>
+                    <button
+                      className="mini-btn update"
+                      onClick={() => {
+                        setCourseToUpdate(course);
+                        setShow(true);
+                      }}
+                    >
+                      Update
+                    </button>
+                  </div>
                 </div>
-              </div>
-            ))}
+              ))
+            )}
           </div>
         </div>
       </div>
-
-      {/* Hidden Modal Trigger */}
-      <Button
-        ref={modalBtnRef}
-        style={{ display: "none" }}
-        onClick={() => setShow(true)}
-      />
 
       {/* Update Modal */}
       <Modal show={show} onHide={() => setShow(false)} centered>
@@ -216,13 +223,19 @@ const Home = () => {
 
         <Modal.Body>
           <form onSubmit={handleUpdateSubmit}>
-            <label>Update course with</label>
-            <select ref={updateRef} required>
-              <option value="" disabled hidden>
+            <label>Select new course</label>
+            <select
+              value={selectedCourse}
+              onChange={(e) => setSelectedCourse(e.target.value)}
+              required
+            >
+              <option value="" disabled>
                 Select course
               </option>
               {courses.map((c, i) => (
-                <option key={i}>{c.courseName}</option>
+                <option key={i} value={c.courseName}>
+                  {c.courseName}
+                </option>
               ))}
             </select>
 
