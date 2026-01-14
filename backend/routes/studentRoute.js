@@ -1,4 +1,5 @@
 import express from "express";
+import bcrypt from "bcryptjs";
 import Student from "../models/Student.js";
 import Course from "../models/Course.js";
 import Enrollment from "../models/Enrollment.js";
@@ -8,7 +9,38 @@ const router = express.Router();
 /* ================= STUDENT REGISTER ================= */
 router.post("/add", async (req, res) => {
   try {
-    const student = new Student(req.body);
+    const {
+      name,
+      email,
+      phone,
+      password,
+      address,
+      registration,
+      role,
+      adminKey,
+    } = req.body;
+
+    // 🔐 Admin secret key validation
+    if (role === "admin") {
+      if (adminKey !== process.env.ADMIN_SECRET_KEY) {
+        return res.status(403).json("Invalid Admin Secret Key");
+      }
+    }
+
+    // 🔒 Password hashing
+    const salt = await bcrypt.genSalt(10);
+    const hashedPassword = await bcrypt.hash(password, salt);
+
+    const student = new Student({
+      name,
+      email,
+      phone,
+      password: hashedPassword,
+      address,
+      registration: role === "admin" ? null : registration,
+      userType: role === "admin" ? "admin" : "user",
+    });
+
     await student.save();
 
     res.status(201).json({
@@ -25,24 +57,28 @@ router.post("/add", async (req, res) => {
 
 /* ================= STUDENT LOGIN ================= */
 router.post("/auth", async (req, res) => {
-  const email = req.body.email?.trim();
-  const password = req.body.password?.trim();
-
   try {
-    const student = await Student.findOne({ email });
+    const { email, password, role, adminKey } = req.body;
 
+    const student = await Student.findOne({ email });
     if (!student) {
-      return res.status(400).json({
-        success: false,
-        message: "User not found",
-      });
+      return res.status(404).json("User not found");
     }
 
-    if (student.password !== password) {
-      return res.status(400).json({
-        success: false,
-        message: "Wrong password",
-      });
+    const isMatch = await bcrypt.compare(password, student.password);
+    if (!isMatch) {
+      return res.status(401).json("Invalid credentials");
+    }
+
+    // 🔐 Admin login validation
+    if (role === "admin") {
+      if (student.userType !== "admin") {
+        return res.status(403).json("Not an admin account");
+      }
+
+      if (adminKey !== process.env.ADMIN_SECRET_KEY) {
+        return res.status(403).json("Invalid Admin Secret Key");
+      }
     }
 
     res.status(200).json({
@@ -50,10 +86,7 @@ router.post("/auth", async (req, res) => {
       student,
     });
   } catch (err) {
-    res.status(500).json({
-      success: false,
-      message: err.message,
-    });
+    res.status(500).json("Server error");
   }
 });
 
@@ -71,13 +104,6 @@ router.get("/getcourses", async (req, res) => {
 });
 
 /* ================= ENROLL COURSE ================= */
-/*
-BODY:
-{
-  registration: "PLKJHU",
-  course: "Database Management Systems"
-}
-*/
 router.post("/course", async (req, res) => {
   const { registration, course } = req.body;
 
@@ -188,7 +214,7 @@ router.delete("/deleteall", async (req, res) => {
   const { registration } = req.body;
 
   try {
-    const updated = await Enrollment.findOneAndUpdate(
+    await Enrollment.findOneAndUpdate(
       { registration },
       { $set: { courses: [] } },
       { new: true }

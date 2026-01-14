@@ -33,7 +33,6 @@ const Login = () => {
       dispatch({ type: "LOGIN_SUCCESS", payload: res.data.student });
       localStorage.setItem("user", JSON.stringify(res.data.student));
 
-
       navigate("/dash");
     } catch (error) {
       toast.error("Credentials are incorrect");

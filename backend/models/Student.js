@@ -15,6 +15,9 @@ const StudentSchema = mongoose.Schema({
     required: true,
     unique: true,
   },
+  userType: {
+    type: String,
+  },
   password: {
     type: String,
     required: true,
@@ -25,8 +28,11 @@ const StudentSchema = mongoose.Schema({
   },
   registration: {
     type: String,
-    required: true,
+    required: function () {
+      return this.userType === "user";
+    },
     unique: true,
+    sparse: true, // 🔑 admin ke liye null allow
   },
 });
 

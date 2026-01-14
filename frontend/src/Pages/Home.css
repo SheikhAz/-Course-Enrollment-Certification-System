@@ -239,6 +239,7 @@ body {
 
 .admin-card:hover {
   transform: translateY(-5px);
+  color: black;
   box-shadow: 0 12px 25px rgba(37, 99, 235, 0.35);
 }
 
@@ -248,3 +249,4 @@ body {
     grid-template-columns: 1fr;
   }
 }
+

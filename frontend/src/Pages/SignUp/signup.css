@@ -175,3 +175,20 @@ textarea{
 .head-sec h2{
     text-align: center;
 }
+.role-section {
+  display: flex;
+  justify-content: space-around;
+  margin: 10px 0;
+  align-items: center;
+}
+
+.role-section label {
+  display: flex;
+  align-items: center;
+  font-size: 15px;
+  cursor: pointer;
+}
+
+.role-section input {
+  margin-right: 6px;
+}
