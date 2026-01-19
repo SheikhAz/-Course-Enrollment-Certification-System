@@ -10,6 +10,9 @@ import CertificateView from "./Pages/CertificateView";
 
 import AdminDashboard from "./Pages/admin/AdminDashboard";
 import ManageCertificates from "./Pages/admin/ManageCertificates";
+import ViewCertificates from "./Pages/admin/ViewCertificates";
+
+import AdminRoute from "./components/AdminRoute";
 
 function App() {
   return (
@@ -27,8 +30,32 @@ function App() {
         />
 
         {/* Admin */}
-        <Route path="/admin/dashboard" element={<AdminDashboard />} />
-        <Route path="/admin/certificates" element={<ManageCertificates />} />
+        <Route
+          path="/admin/dashboard"
+          element={
+            <AdminRoute>
+              <AdminDashboard />
+            </AdminRoute>
+          }
+        />
+
+        <Route
+          path="/admin/manage-certificates"
+          element={
+            <AdminRoute>
+              <ManageCertificates />
+            </AdminRoute>
+          }
+        />
+
+        <Route
+          path="/admin/certificates"
+          element={
+            <AdminRoute>
+              <ViewCertificates />
+            </AdminRoute>
+          }
+        />
       </Routes>
     </BrowserRouter>
   );

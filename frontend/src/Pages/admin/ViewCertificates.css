@@ -1,0 +1,103 @@
+/* Page container */
+.admin-page {
+  padding: 30px;
+  background-color: #f8fafc;
+  min-height: 100vh;
+}
+
+/* Page title */
+.admin-page h1 {
+  font-size: 24px;
+  font-weight: 600;
+  color: #1e293b;
+  margin-bottom: 20px;
+}
+
+/* Empty state text */
+.admin-page p {
+  color: #64748b;
+  font-size: 15px;
+}
+
+/* Table wrapper */
+.cert-table {
+  width: 100%;
+  border-collapse: collapse;
+  background-color: #ffffff;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+}
+
+/* Table header */
+.cert-table thead {
+  background: linear-gradient(135deg, #2563eb, #1d4ed8);
+}
+
+.cert-table thead th {
+  padding: 14px;
+  text-align: left;
+  color: #ffffff;
+  font-weight: 500;
+  font-size: 14px;
+}
+
+/* Table body */
+.cert-table tbody tr {
+  border-bottom: 1px solid #e5e7eb;
+  transition: background-color 0.2s ease;
+}
+
+.cert-table tbody tr:hover {
+  background-color: #f1f5f9;
+}
+
+.cert-table tbody td {
+  padding: 14px;
+  font-size: 14px;
+  color: #334155;
+}
+
+/* Remove border from last row */
+.cert-table tbody tr:last-child {
+  border-bottom: none;
+}
+
+/* Responsive table */
+@media (max-width: 768px) {
+  .cert-table thead {
+    display: none;
+  }
+
+  .cert-table,
+  .cert-table tbody,
+  .cert-table tr,
+  .cert-table td {
+    display: block;
+    width: 100%;
+  }
+
+  .cert-table tr {
+    margin-bottom: 15px;
+    background-color: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+    padding: 10px;
+  }
+
+  .cert-table td {
+    text-align: right;
+    padding-left: 50%;
+    position: relative;
+  }
+
+  .cert-table td::before {
+    content: attr(data-label);
+    position: absolute;
+    left: 15px;
+    width: 45%;
+    font-weight: 600;
+    color: #475569;
+    text-align: left;
+  }
+}

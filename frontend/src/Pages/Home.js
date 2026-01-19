@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useContext } from "react";
 import Header from "../components/Header";
-import Profile from "../components/Profile/Profile";
 import axios from "axios";
 import { Context } from "../Context/Context";
 import { toast } from "react-toastify";
@@ -12,6 +11,8 @@ import "./Home.css";
 const Home = () => {
   const { user } = useContext(Context);
 
+  console.log("Logged in role:", user?.role);
+
   const [show, setShow] = useState(false);
   const [userModal, setUserModal] = useState(false);
 
@@ -20,25 +21,24 @@ const Home = () => {
   const [selectedCourse, setSelectedCourse] = useState("");
   const [courseToUpdate, setCourseToUpdate] = useState(null);
 
-  /* ---------------- FETCH DATA ---------------- */
+  /* ================= STUDENT DATA ================= */
   useEffect(() => {
-    fetchAllCourses();
-    fetchUserCourses();
-  }, []);
+    if (user?.role === "user") {
+      fetchAllCourses();
+      fetchUserCourses();
+    }
+  }, [user]);
 
   const fetchAllCourses = async () => {
     try {
       const res = await axios.get(
         "http://localhost:5000/api/register/getcourses"
       );
-      console.log("COURSES FROM API:", res.data);
       setCourses(res.data);
     } catch {
       toast.error("Failed to load courses");
     }
   };
-
-
 
   const fetchUserCourses = async () => {
     try {
@@ -46,16 +46,13 @@ const Home = () => {
         "http://localhost:5000/api/register/getsecscourses",
         { registration: user.registration }
       );
-
-      // EXPECTED FORMAT:
-      // [{ _id, courseName, status, certificateIssued }]
       setEnrolledCourses(res.data?.courses || []);
     } catch {
       setEnrolledCourses([]);
     }
   };
 
-  /* ---------------- ENROLL COURSE ---------------- */
+  /* ================= STUDENT ACTIONS ================= */
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -76,12 +73,11 @@ const Home = () => {
       toast.success("Course enrolled successfully");
       setSelectedCourse("");
       setEnrolledCourses(res.data.courses);
-    } catch (err) {
+    } catch {
       toast.error("Enrollment failed");
     }
   };
 
-  /* ---------------- DELETE COURSE ---------------- */
   const handleDelete = async (courseName) => {
     if (!window.confirm("Delete this course?")) return;
 
@@ -97,7 +93,6 @@ const Home = () => {
     }
   };
 
-  /* ---------------- DELETE ALL ---------------- */
   const handleDropAll = async () => {
     if (!window.confirm("Re-enroll all courses?")) return;
 
@@ -113,7 +108,6 @@ const Home = () => {
     }
   };
 
-  /* ---------------- UPDATE COURSE ---------------- */
   const handleUpdateSubmit = async (e) => {
     e.preventDefault();
 
@@ -132,133 +126,113 @@ const Home = () => {
     }
   };
 
-  /* ---------------- UI ---------------- */
   return (
     <div className="nav-side-container">
       <Header setUserModal={setUserModal} userModal={userModal} />
-
       <div className="dashboard-area">
-        {userModal && <Profile />}
+        {/* ================= ADMIN DASHBOARD ================= */}
+        {user?.role === "admin" && (
+          <div className="admin-dashboard">
+            <div className="admin-cards">
+              <Link to="/admin/dashboard" className="admin-card-lg">
+                <h2>Dashboard</h2>
+                <p>View system statistics and reports</p>
+              </Link>
 
-        <div className="center-wrapper">
-          {/* Enrollment Card */}
-          <form className="enroll-card" onSubmit={handleSubmit}>
-            <h2>Course Enrollment</h2>
+              <Link to="/admin/manage-certificates" className="admin-card-lg">
+                <h2>Issue Certificates</h2>
+                <p>Approve & issue certificates to students</p>
+              </Link>
 
-            <label>Choose a course</label>
-            <select
-              value={selectedCourse}
-              onChange={(e) => setSelectedCourse(e.target.value)}
-              required
-            >
-              <option value="" disabled>
-                Select course
-              </option>
-              {courses.map((c, i) => (
-                <option key={i} value={c.courseName}>
-                  {c.courseName}
-                </option>
-              ))}
-            </select>
+              <Link to="/admin/certificates" className="admin-card-lg">
+                <h2>View Certificates</h2>
+                <p>View all issued certificates</p>
+              </Link>
+            </div>
+          </div>
+        )}
 
-            <div className="btn-group">
-              <button
-                type="button"
-                className="btn reject"
-                onClick={() => setSelectedCourse("")}
+        {/* ================= STUDENT DASHBOARD ================= */}
+        {user?.role === "user" && (
+          <div className="student-grid">
+            <form className="enroll-card" onSubmit={handleSubmit}>
+              <h2>Course Enrollment</h2>
+
+              <label>Choose a course</label>
+              <select
+                value={selectedCourse}
+                onChange={(e) => setSelectedCourse(e.target.value)}
+                required
               >
-                Reject
-              </button>
-              <button type="submit" className="btn accept">
-                Accept
-              </button>
-            </div>
-          </form>
-          {/* ================= ADMIN PANEL ================= */}
-          <div className="admin-panel">
-            <h3 className="admin-title">Admin Panel</h3>
+                <option value="" disabled>
+                  Select course
+                </option>
+                {courses.map((c, i) => (
+                  <option key={i} value={c.courseName}>
+                    {c.courseName}
+                  </option>
+                ))}
+              </select>
 
-            <div className="admin-links">
-              <Link to="/admin/dashboard" className="admin-card">
-                <h4>Dashboard</h4>
-                <p>View system statistics</p>
-              </Link>
+              <div className="btn-group">
+                <button
+                  type="button"
+                  className="btn reject"
+                  onClick={() => setSelectedCourse("")}
+                >
+                  Reject
+                </button>
+                <button type="submit" className="btn accept">
+                  Accept
+                </button>
+              </div>
+            </form>
 
-              <Link to="/admin/manage-certificates" className="admin-card">
-                <h4>Issue Certificates</h4>
-                <p>Approve & issue certificates</p>
-              </Link>
+            <div className="enrolled-section">
+              <div className="enrolled-header">
+                <h3>Enrolled Courses</h3>
+                <button className="btn reenroll" onClick={handleDropAll}>
+                  Re-Enroll
+                </button>
+              </div>
 
-              <Link to="/admin/certificates" className="admin-card">
-                <h4>View Certificates</h4>
-                <p>All issued certificates</p>
-              </Link>
-            </div>
-          </div>
-
-          {/* Enrolled Courses */}
-          <div className="enrolled-section">
-            <div className="enrolled-header">
-              <h3>Enrolled Courses</h3>
-              <button className="btn reenroll" onClick={handleDropAll}>
-                Re-Enroll
-              </button>
-            </div>
-
-            {enrolledCourses.length === 0 ? (
-              <p style={{ color: "#64748b" }}>No courses enrolled yet</p>
-            ) : (
-              enrolledCourses.map((course) => (
-                <div key={course._id} className="course-card">
-                  <div>
+              {enrolledCourses.length === 0 ? (
+                <p>No courses enrolled yet</p>
+              ) : (
+                enrolledCourses.map((course) => (
+                  <div key={course._id} className="course-card">
                     <strong>{course.courseName}</strong>
-                    <p>Status: {course.status || "enrolled"}</p>
-                  </div>
-
-                  <div className="course-actions">
-                    <button
-                      className="mini-btn delete"
-                      onClick={() => handleDelete(course.courseName)}
-                    >
-                      Delete
-                    </button>
-
-                    <button
-                      className="mini-btn update"
-                      onClick={() => {
-                        setCourseToUpdate(course);
-                        setShow(true);
-                      }}
-                    >
-                      Update
-                    </button>
-
-                    {/* ✅ VIEW CERTIFICATE */}
-                    {course.certificateIssued && (
-                      <Link
-                        className="mini-btn certificate"
-                        to={`/certificate/${course._id}`}
+                    <div className="course-actions">
+                      <button
+                        className="mini-btn delete"
+                        onClick={() => handleDelete(course.courseName)}
                       >
-                        View Certificate
-                      </Link>
-                    )}
+                        Delete
+                      </button>
+                      <button
+                        className="mini-btn update"
+                        onClick={() => {
+                          setCourseToUpdate(course);
+                          setShow(true);
+                        }}
+                      >
+                        Update
+                      </button>
+                    </div>
                   </div>
-                </div>
-              ))
-            )}
+                ))
+              )}
+            </div>
           </div>
-        </div>
+        )}
       </div>
 
-      {/* Update Modal */}
       <Modal show={show} onHide={() => setShow(false)} centered>
         <Modal.Header closeButton>
           <Modal.Title>Update Course</Modal.Title>
         </Modal.Header>
-
         <Modal.Body>
           <form onSubmit={handleUpdateSubmit}>
-            <label>Select new course</label>
             <select
               value={selectedCourse}
               onChange={(e) => setSelectedCourse(e.target.value)}

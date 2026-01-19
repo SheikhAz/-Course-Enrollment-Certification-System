@@ -27,14 +27,20 @@ const Login = () => {
         loginCred
       );
 
+      // 🔑 MAP userType → role
+      const loggedUser = {
+        ...res.data.student,
+        role: res.data.student.userType,
+      };
+
       toast.success("Logged in successfully");
 
-      // ✅ IMPORTANT FIX
-      dispatch({ type: "LOGIN_SUCCESS", payload: res.data.student });
-      localStorage.setItem("user", JSON.stringify(res.data.student));
+      dispatch({ type: "LOGIN_SUCCESS", payload: loggedUser });
+      localStorage.setItem("user", JSON.stringify(loggedUser));
 
       navigate("/dash");
     } catch (error) {
+      toast.dismiss();
       toast.error("Credentials are incorrect");
       dispatch({ type: "LOGIN_FAILURE" });
     }
