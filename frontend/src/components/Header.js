@@ -11,7 +11,7 @@ import { Context } from "../Context/Context";
 const Header = ({ userModal, setUserModal }) => {
   const { user } = useContext(Context);
 
-  // 🔥 ROLE CHECK
+  //ROLE CHECK
   const isAdmin = user?.userType === "admin";
 
   return (
@@ -22,7 +22,7 @@ const Header = ({ userModal, setUserModal }) => {
           <FaGraduationCap size={20} />
         </div>
 
-        {/* ✅ DYNAMIC TITLE */}
+        {/* DYNAMIC TITLE */}
         <span className="app-title">
           {isAdmin ? "Admin Dashboard" : "Student Dashboard"}
         </span>

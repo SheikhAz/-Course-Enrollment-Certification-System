@@ -21,7 +21,7 @@ const Home = () => {
   const [selectedCourse, setSelectedCourse] = useState("");
   const [courseToUpdate, setCourseToUpdate] = useState(null);
 
-  /* ================= STUDENT DATA ================= */
+  /*STUDENT DATA  */
   useEffect(() => {
     if (user?.role === "user") {
       fetchAllCourses();
@@ -52,7 +52,7 @@ const Home = () => {
     }
   };
 
-  /* ================= STUDENT ACTIONS ================= */
+  /*  STUDENT ACTIONS*/
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -130,7 +130,9 @@ const Home = () => {
     <div className="nav-side-container">
       <Header setUserModal={setUserModal} userModal={userModal} />
       <div className="dashboard-area">
-        {/* ================= ADMIN DASHBOARD ================= */}
+
+        {/*ADMIN DASHBOARD */}
+
         {user?.role === "admin" && (
           <div className="admin-dashboard">
             <div className="admin-cards">
@@ -152,7 +154,7 @@ const Home = () => {
           </div>
         )}
 
-        {/* ================= STUDENT DASHBOARD ================= */}
+        {/* STUDENT DASHBOARD  */}
         {user?.role === "user" && (
           <div className="student-grid">
             <form className="enroll-card" onSubmit={handleSubmit}>
@@ -226,7 +228,6 @@ const Home = () => {
           </div>
         )}
       </div>
-
       <Modal show={show} onHide={() => setShow(false)} centered>
         <Modal.Header closeButton>
           <Modal.Title>Update Course</Modal.Title>

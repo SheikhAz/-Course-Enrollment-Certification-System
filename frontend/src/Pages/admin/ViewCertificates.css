@@ -1,11 +1,9 @@
-/* Page container */
 .admin-page {
   padding: 30px;
   background-color: #f8fafc;
   min-height: 100vh;
 }
 
-/* Page title */
 .admin-page h1 {
   font-size: 24px;
   font-weight: 600;
@@ -13,13 +11,13 @@
   margin-bottom: 20px;
 }
 
-/* Empty state text */
+
 .admin-page p {
   color: #64748b;
   font-size: 15px;
 }
 
-/* Table wrapper */
+
 .cert-table {
   width: 100%;
   border-collapse: collapse;
@@ -29,7 +27,7 @@
   box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
 }
 
-/* Table header */
+
 .cert-table thead {
   background: linear-gradient(135deg, #2563eb, #1d4ed8);
 }
@@ -42,7 +40,7 @@
   font-size: 14px;
 }
 
-/* Table body */
+
 .cert-table tbody tr {
   border-bottom: 1px solid #e5e7eb;
   transition: background-color 0.2s ease;
@@ -58,12 +56,11 @@
   color: #334155;
 }
 
-/* Remove border from last row */
 .cert-table tbody tr:last-child {
   border-bottom: none;
 }
 
-/* Responsive table */
+
 @media (max-width: 768px) {
   .cert-table thead {
     display: none;

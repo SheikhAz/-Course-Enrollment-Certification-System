@@ -40,19 +40,7 @@ svg{
     position: fixed;
     z-index: 1000000;
 }
-/* .side-bar::-webkit-scrollbar{
-    width: 7px;
-}
-.side-bar::-webkit-scrollbar-track {
-    border-radius: 7px;
-    
-}
 
-.side-bar::-webkit-scrollbar-thumb {
-    border-radius: 10px;
-    box-shadow: inset 6px 6px 6px #000; 
-   
-} */
 .back-normal{
     background-color:#001609 ;
 }

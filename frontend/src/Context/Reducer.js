@@ -9,7 +9,7 @@ const Reducer = (state, action) => {
 
     case "LOGIN_SUCCESS":
       return {
-        user: action.payload, // ✅ FULL STUDENT OBJECT
+        user: action.payload,
         isFetching: false,
         error: false,
       };

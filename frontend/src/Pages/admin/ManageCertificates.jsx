@@ -6,7 +6,7 @@ import "./ManageCertificates.css";
 const ManageCertificates = () => {
   const [enrollments, setEnrollments] = useState([]);
 
-  /* ---------------- FETCH ALL ENROLLMENTS ---------------- */
+  /* FETCH ALL ENROLLMENTS */
   useEffect(() => {
     fetchEnrollments();
   }, []);
@@ -22,7 +22,7 @@ const ManageCertificates = () => {
     }
   };
 
-  /* ---------------- ISSUE CERTIFICATE ---------------- */
+  /* ISSUE CERTIFICATE*/
   const issueCertificate = async (enrollmentId, courseName) => {
     try {
       await axios.put("http://localhost:5000/api/admin/issue-certificate", {

@@ -5,7 +5,6 @@ import { Context } from "../Context/Context";
 const AdminRoute = ({ children }) => {
   const { user } = useContext(Context);
 
-  // Not logged in OR not admin
   if (!user || user.role !== "admin") {
     return <Navigate to="/" replace />;
   }

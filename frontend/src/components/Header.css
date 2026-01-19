@@ -1,4 +1,4 @@
-/* ================= HEADER ================= */
+/* HEADER  */
 .app-header {
   position: fixed;
   top: 0;
@@ -19,7 +19,7 @@
   z-index: 1000; /* header layer */
 }
 
-/* ================= LEFT ================= */
+/* LEFT */
 .header-left {
   display: flex;
   align-items: center;
@@ -47,9 +47,9 @@
   letter-spacing: 0.4px;
 }
 
-/* ================= RIGHT ================= */
+/* RIGHT */
 .header-right {
-  position: relative;      /* 🔥 anchor dropdown */
+  position: relative;
   display: flex;
   gap: 16px;
   z-index: 1100;
@@ -82,10 +82,10 @@
   background: #2563eb;
 }
 
-/* ================= PROFILE / SETTINGS DROPDOWN ================= */
+/* PROFILE */
 .profile-menu {
   position: absolute;
-  top: 68px;          /* below header */
+  top: 68px;        
   right: 0;
 
   width: 220px;
@@ -93,7 +93,7 @@
   border-radius: 14px;
 
   box-shadow: 0 20px 45px rgba(0, 0, 0, 0.35);
-  z-index: 2000;      /* 🔥 ABOVE admin cards */
+  z-index: 2000;      
 
   padding: 10px 0;
 }
@@ -118,19 +118,18 @@
   background: #f1f5f9;
 }
 
-/* ================= SAFETY: ADMIN CARDS BELOW ================= */
+/* SAFETY: ADMIN CARDS BELOW */
 .admin-card-lg {
   position: relative;
   z-index: 1;
 }
-/* ================= PROFILE NAME ================= */
+/* PROFILE NAME */
 .profile-name {
   padding: 14px 18px 10px;
-  font-size: 16px;          /* medium size */
-  font-weight: 600;         /* bold */
+  font-size: 16px;       
   color: #0f172a;
 
-  border-bottom: 1px solid #e5e7eb;  /* subtle divider */
+  border-bottom: 1px solid #e5e7eb;
   margin-bottom: 6px;
 
   text-align: left;

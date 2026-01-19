@@ -83,7 +83,7 @@
 }
 .login-btn {
   display: block;
-  margin: 20px auto;   /* THIS centers the button */
+  margin: 20px auto;  
   padding: 12px 40px;
   background: green;
   color: white;
@@ -110,7 +110,7 @@
 }
 .log-sec span{
    background-color: black;
-   margin: 20px auto;          /* ✅ centers the button */
+   margin: 20px auto;          
    color: white;
    font-weight: 700;
    cursor: pointer;
@@ -119,7 +119,7 @@
    padding: 10px;
    text-align: center;
    border: 1px solid #000;
-   display: block;             /* ✅ important */
+   display: block;             
 }
 
 .log-sec{
