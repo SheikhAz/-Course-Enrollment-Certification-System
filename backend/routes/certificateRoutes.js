@@ -1,14 +1,23 @@
-const express = require("express");
+import express from "express";
+import Enrollment from "../models/Enrollment.js";
+import authMiddleware from "../middleware/authMiddleware.js";
+
 const router = express.Router();
-const isAdmin = require("../middleware/isAdmin");
-const authMiddleware = require("../middleware/authMiddleware");
-const { issueCertificate } = require("../controllers/certificateController");
 
-router.post(
-  "/issue-certificate",
-  authMiddleware, // verifies token & sets req.user
-  isAdmin, // checks admin role
-  issueCertificate
-);
+/* ================= STUDENT – DOWNLOAD CERTIFICATE ================= */
+router.get("/download/:enrollmentId", authMiddleware, async (req, res) => {
+  const enrollment = await Enrollment.findById(req.params.enrollmentId);
 
-module.exports = router;
+  if (
+    !enrollment ||
+    !enrollment.certificateIssued ||
+    enrollment.student.toString() !== req.user.id
+  ) {
+    return res.status(403).json({ message: "Access denied" });
+  }
+
+  res.download(enrollment.certificateUrl);
+});
+
+
+export default router;

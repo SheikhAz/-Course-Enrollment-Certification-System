@@ -3,6 +3,7 @@ import bcrypt from "bcryptjs";
 import Student from "../models/Student.js";
 import Course from "../models/Course.js";
 import Enrollment from "../models/Enrollment.js";
+import jwt from "jsonwebtoken";
 
 const router = express.Router();
 
@@ -81,8 +82,20 @@ router.post("/auth", async (req, res) => {
       }
     }
 
+    // 🔑 CREATE JWT TOKEN
+    const token = jwt.sign(
+      {
+        id: student._id,
+        role: student.userType, // admin or user
+      },
+      process.env.JWT_SECRET,
+      { expiresIn: "1d" },
+    );
+
+    // ✅ SEND TOKEN TO FRONTEND
     res.status(200).json({
       success: true,
+      token,
       student,
     });
   } catch (err) {

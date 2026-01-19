@@ -56,6 +56,10 @@ function App() {
             </AdminRoute>
           }
         />
+        <Route
+          path="/certificate/:registration/:courseName"
+          element={<CertificateView />}
+        />
       </Routes>
     </BrowserRouter>
   );

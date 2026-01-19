@@ -7,6 +7,7 @@ import { ContextProvider } from "./Context/Context";
 import { AuthProvider } from "./Context/AuthContext";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
+
 root.render(
   <React.StrictMode>
     <AuthProvider>

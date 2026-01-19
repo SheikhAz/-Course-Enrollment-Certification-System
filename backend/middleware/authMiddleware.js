@@ -14,11 +14,12 @@ const authMiddleware = (req, res, next) => {
 
     // decoded MUST contain { id, role }
     req.user = decoded;
-
+    console.log("Decoded user:", req.user);
     next();
   } catch (err) {
     return res.status(401).json({ message: "Invalid token" });
   }
 };
+
 
 export default authMiddleware;

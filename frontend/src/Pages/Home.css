@@ -41,7 +41,8 @@ body,
 }
 
 .enroll-card:hover,
-.enrolled-section:hover {
+.enrolled-section:hover,
+.completed-section:hover {
   transform: translateY(-6px);
   box-shadow:
     0 32px 64px rgba(0, 0, 0, 0.28),
@@ -239,4 +240,49 @@ body,
 .admin-dashboard::before,
 .admin-dashboard::after {
   display: none !important;
+}
+/* COMPLETED CERTIFICATES */
+
+.completed-section {
+  background: white;
+  border-radius: 16px;
+  padding: 20px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+}
+
+.completed-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+.completed-card {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: linear-gradient(90deg, #0f9b0f, #38ef7d);
+  color: white;
+  padding: 12px 18px;
+  border-radius: 12px;
+  margin-bottom: 10px;
+}
+
+.mini-btn.download {
+  background: white;
+  color: #0f9b0f;
+  border: none;
+  padding: 6px 14px;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.mini-btn.download:hover {
+  opacity: 0.9;
+}
+
+.pending-text {
+  font-weight: 500;
+  color: #ffeaa7;
 }

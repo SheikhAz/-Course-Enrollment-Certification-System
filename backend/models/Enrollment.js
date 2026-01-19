@@ -17,10 +17,16 @@ const EnrollmentSchema = new mongoose.Schema(
           type: Boolean,
           default: false,
         },
+
+        // ✅ ADD THIS (NEW)
+        certificateUrl: {
+          type: String,
+          default: null,
+        },
       },
     ],
   },
-  { timestamps: true }
+  { timestamps: true },
 );
 
 export default mongoose.model("Enrollment", EnrollmentSchema);

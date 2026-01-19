@@ -5,6 +5,8 @@ import axios from "axios";
 import { toast } from "react-toastify";
 import { Context } from "../../Context/Context";
 
+
+
 const Login = () => {
   const navigate = useNavigate();
   const emailRef = useRef();
@@ -24,7 +26,7 @@ const Login = () => {
     try {
       const res = await axios.post(
         "http://localhost:5000/api/register/auth",
-        loginCred
+        loginCred,
       );
 
       // 🔑 MAP userType → role
@@ -38,7 +40,11 @@ const Login = () => {
       dispatch({ type: "LOGIN_SUCCESS", payload: loggedUser });
       localStorage.setItem("user", JSON.stringify(loggedUser));
 
+      // ✅ ADD THIS LINE (VERY IMPORTANT)
+      localStorage.setItem("token", res.data.token);
+
       navigate("/dash");
+
     } catch (error) {
       toast.dismiss();
       toast.error("Credentials are incorrect");

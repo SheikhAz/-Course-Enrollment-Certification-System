@@ -130,7 +130,6 @@ const Home = () => {
     <div className="nav-side-container">
       <Header setUserModal={setUserModal} userModal={userModal} />
       <div className="dashboard-area">
-
         {/*ADMIN DASHBOARD */}
 
         {user?.role === "admin" && (
@@ -223,6 +222,39 @@ const Home = () => {
                     </div>
                   </div>
                 ))
+              )}
+            </div>
+            {/* COMPLETED CERTIFICATES */}
+            <div className="completed-section">
+              <div className="completed-header">
+                <h3>Completed Certificates</h3>
+              </div>
+
+              {enrolledCourses.filter((c) => c.status === "completed")
+                .length === 0 ? (
+                <p>No completed courses yet</p>
+              ) : (
+                enrolledCourses
+                  .filter((c) => c.status === "completed")
+                  .map((course, index) => (
+                    <div key={index} className="completed-card">
+                      <strong>{course.courseName}</strong>
+
+                      {course.certificateIssued && (
+                        <button
+                          className="mini-btn download"
+                          onClick={() =>
+                            window.open(
+                              `${process.env.REACT_APP_API_URL}/certificates/download?registration=${user.registration}&courseName=${course.courseName}`,
+                              "_blank",
+                            )
+                          }
+                        >
+                          Download Certificate
+                        </button>
+                      )}
+                    </div>
+                  ))
               )}
             </div>
           </div>

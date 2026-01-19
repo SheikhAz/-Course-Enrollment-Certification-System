@@ -16,19 +16,20 @@ const AdminDashboard = () => {
 
   return (
     <div className="admin-dashboard">
-      <div className="admin-dashboard-content">
-        <h1>Admin Dashboard</h1>
+      <div className="admin-cards">
+        <div className="admin-card-lg">
+          <h2>Total Enrollments</h2>
+          <p>{stats.totalEnrollments}</p>
+        </div>
 
-        <div className="stats-card">
-          <p>
-            <strong>Total Enrollments:</strong> {stats.totalEnrollments}
-          </p>
-          <p>
-            <strong>Completed Courses:</strong> {stats.completedCourses}
-          </p>
-          <p>
-            <strong>Completion Rate:</strong> {stats.completionRate}%
-          </p>
+        <div className="admin-card-lg">
+          <h2>Completed Courses</h2>
+          <p>{stats.completedCourses}</p>
+        </div>
+
+        <div className="admin-card-lg">
+          <h2>Completion Rate</h2>
+          <p>{stats.completionRate}%</p>
         </div>
       </div>
     </div>

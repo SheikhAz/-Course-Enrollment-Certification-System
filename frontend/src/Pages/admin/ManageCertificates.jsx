@@ -6,7 +6,6 @@ import "./ManageCertificates.css";
 const ManageCertificates = () => {
   const [enrollments, setEnrollments] = useState([]);
 
-  /* FETCH ALL ENROLLMENTS */
   useEffect(() => {
     fetchEnrollments();
   }, []);
@@ -14,7 +13,12 @@ const ManageCertificates = () => {
   const fetchEnrollments = async () => {
     try {
       const res = await axios.get(
-        "http://localhost:5000/api/admin/enrollments"
+        "http://localhost:5000/api/admin/enrollments",
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        },
       );
       setEnrollments(res.data);
     } catch {
@@ -22,72 +26,105 @@ const ManageCertificates = () => {
     }
   };
 
-  /* ISSUE CERTIFICATE*/
-  const issueCertificate = async (enrollmentId, courseName) => {
-    try {
-      await axios.put("http://localhost:5000/api/admin/issue-certificate", {
-        enrollmentId,
-        courseName,
-      });
 
-      toast.success("Certificate issued successfully");
-      fetchEnrollments();
-    } catch (err) {
-      toast.error("Certificate issue failed");
+
+
+  const handleUploadCertificate = async (file, registration, courseName) => {
+    try {
+      const formData = new FormData();
+      formData.append("certificate", file);
+      formData.append("registration", registration);
+      formData.append("courseName", courseName);
+
+      await axios.post(
+        "http://localhost:5000/api/admin/certificates/upload",
+        formData,
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        },
+      );
+
+     toast.success("Certificate uploaded successfully");
+     fetchEnrollments();
+    } catch (error) {
+      alert(error.response?.data?.message || "Upload failed");
     }
   };
 
+
   return (
     <div className="manage-certificates">
-      <div className="manage-certificates-content">
-        <h1>Manage Certificates</h1>
+      <h1 className="page-title">Manage Certificates</h1>
 
-        {enrollments.length === 0 ? (
-          <p>No enrollments found</p>
-        ) : (
-          enrollments.map((enrollment) =>
-            enrollment.courses.map((course, index) => (
-              <div
-                className="certificate-card"
-                key={`${enrollment._id}-${index}`}
-              >
-                <p>
-                  <strong>Registration:</strong> {enrollment.registration}
-                </p>
+      {enrollments.length === 0 ? (
+        <p className="no-data">No enrollments found</p>
+      ) : (
+        enrollments.map((enrollment) =>
+          enrollment.courses.map((course, index) => (
+            <div
+              className="certificate-card"
+              key={`${enrollment._id}-${index}`}
+            >
+              {/* LEFT SIDE */}
+              <div className="card-left">
+                <div className="info">
+                  <span>Registration</span>
+                  <strong>{enrollment.registration}</strong>
+                </div>
 
-                <p>
-                  <strong>Course:</strong> {course.courseName}
-                </p>
+                <div className="info">
+                  <span>Course</span>
+                  <strong>{course.courseName}</strong>
+                </div>
 
-                <p>
-                  <strong>Status:</strong> {course.status || "enrolled"}
-                </p>
+                <div className="info">
+                  <span>Status</span>
+                  <strong>{course.status || "enrolled"}</strong>
+                </div>
 
-                <p>
-                  <strong>Certificate:</strong>{" "}
-                  {course.certificateIssued ? "Issued" : "Not Issued"}
-                </p>
+                <div className="info">
+                  <span>Certificate</span>
+                  <strong>
+                    {course.certificateIssued ? "Issued" : "Not Issued"}
+                  </strong>
+                </div>
 
-                <button
-                  disabled={
-                    course.certificateIssued || course.status !== "completed"
-                  }
-                  onClick={() =>
-                    issueCertificate(enrollment._id, course.courseName)
-                  }
+                <label
                   className={`issue-btn ${
                     course.certificateIssued || course.status !== "completed"
                       ? "disabled"
                       : ""
                   }`}
                 >
-                  Issue Certificate
-                </button>
+                  Upload Certificate
+                  <input
+                    type="file"
+                    accept=".pdf,image/*"
+                    hidden
+                    disabled={
+                      course.certificateIssued || course.status !== "completed"
+                    }
+                    onChange={(e) =>
+                      handleUploadCertificate(
+                        e.target.files[0],
+                        enrollment.registration,
+                        course.courseName,
+                      )
+                    }
+                  />
+                </label>
               </div>
-            ))
-          )
-        )}
-      </div>
+
+              {/* RIGHT SIDE */}
+              <div className="card-right">
+                <img src="/certificate.png" alt="Certificate Illustration" />
+              </div>
+            </div>
+          )),
+        )
+      )}
     </div>
   );
 };
